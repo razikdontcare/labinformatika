@@ -8,14 +8,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import MonitorIllustration from "@/components/illustrations/monitor";
 
 export default function AboutContent() {
   return (
     <>
+      <MonitorIllustration className="fixed -bottom-20 right-0 size-[30rem] opacity-50" />
       <section className="flex min-h-screen w-full flex-col" role="banner">
         <Navbar />
         <div className="flex w-full flex-1 flex-col bg-neutral-50 p-3">
-          <div className="container mx-auto flex max-w-5xl flex-col gap-3">
+          <div className="container z-10 mx-auto flex max-w-5xl flex-col gap-3">
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
