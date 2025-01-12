@@ -10,21 +10,24 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
+import { usePathname } from "next/navigation";
 
-const links = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
-];
+const links = [{ name: "About", href: "/about" }];
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   return (
     <>
-      <div className="flex w-full items-center justify-center">
-        <div className="container mx-auto flex items-center justify-between p-3">
+      <header className="flex w-full items-center justify-center bg-white shadow-md">
+        <div className="container mx-auto flex max-w-7xl items-center justify-between p-3">
           <div className="flex items-center justify-center gap-3">
-            <Image src={logo} alt="Informatika UNUD" className="size-10" />
-            <div className="flex items-center justify-center">
+            <Link href="/">
+              <div className="flex cursor-pointer items-center justify-center">
+                <Image src={logo} alt="Informatika UNUD" className="size-10" />
+              </div>
+            </Link>
+            <nav>
               <NavigationMenu>
                 <NavigationMenuList>
                   {links.map((link, i) => (
@@ -40,18 +43,20 @@ export default function Navbar() {
                   ))}
                 </NavigationMenuList>
               </NavigationMenu>
-            </div>
+            </nav>
           </div>
           <div className="flex items-center justify-center gap-3">
             <Button asChild variant={"outline"}>
               <Link href="/login">Login</Link>
             </Button>
-            <Button asChild>
-              <Link href="/showcase">Showcase</Link>
-            </Button>
+            {pathname !== "/showcase" && (
+              <Button asChild>
+                <Link href="/showcase">Showcase</Link>
+              </Button>
+            )}
           </div>
         </div>
-      </div>
+      </header>
     </>
   );
 }
