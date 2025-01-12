@@ -9,7 +9,10 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Lab Informatika",
+  title: {
+    template: "%s | Lab Informatika",
+    default: "Lab Informatika",
+  },
   description: "Official Site of Lab Informatika Universitas Udayana",
 };
 
