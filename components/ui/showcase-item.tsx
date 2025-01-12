@@ -59,7 +59,7 @@ export default function ShowcaseItem() {
               </Button>
             </DialogTrigger>
             <DialogContent>
-              <AspectRatio ratio={16 / 9}>
+              <AspectRatio ratio={16 / 9} className="mt-2">
                 <Image
                   src={image}
                   alt="UniBiz - Unit Bisnis Udayana"
