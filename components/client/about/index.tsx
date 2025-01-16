@@ -13,7 +13,7 @@ import MonitorIllustration from "@/components/illustrations/monitor";
 export default function AboutContent() {
   return (
     <>
-      <MonitorIllustration className="fixed -bottom-20 right-0 size-[30rem] opacity-50" />
+      <MonitorIllustration className="-bottom-20 right-0 hidden size-[30rem] opacity-50 md:fixed md:flex" />
       <section className="flex min-h-screen w-full flex-col" role="banner">
         <Navbar />
         <div className="flex w-full flex-1 flex-col bg-neutral-50 p-3">
