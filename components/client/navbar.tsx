@@ -19,7 +19,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="flex w-full items-center justify-center bg-white shadow-md">
+      <header className="z-10 flex w-full items-center justify-center bg-white shadow-md">
         <div className="container mx-auto flex max-w-7xl items-center justify-between p-3">
           <div className="flex items-center justify-center gap-3">
             <Link href="/">
