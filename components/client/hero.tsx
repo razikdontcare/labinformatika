@@ -7,6 +7,8 @@ import PythonIllustration from "../illustrations/python";
 import ServerIllustration from "../illustrations/server";
 import WordpressIllustration from "../illustrations/wp";
 import ProgrammingIllustration from "../illustrations/programming";
+import DotPattern from "../ui/dot-pattern";
+import { cn } from "@/lib/utils";
 
 export default function Hero() {
   return (
@@ -37,6 +39,11 @@ export default function Hero() {
             </Button>
           </div>
         </div>
+        <DotPattern
+          className={cn(
+            "[mask-image:radial-gradient(680px_circle_at_center,white,transparent)]",
+          )}
+        />
       </section>
     </>
   );
