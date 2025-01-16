@@ -1,13 +1,13 @@
 import * as React from "react";
 
-import { SearchForm } from "@/components/search-form";
+// import { SearchForm } from "@/components/search-form";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
+  // SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
