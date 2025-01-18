@@ -41,10 +41,10 @@ export async function loginAction(username: string, password: string) {
   }
   const { token } = await response.json();
   const userCredentials = await signInWithCustomToken(auth, token);
-  const idToken = await userCredentials.user.getIdToken();
+  const idToken = await userCredentials.user.getIdTokenResult();
 
   await refreshCookiesWithIdToken(
-    idToken,
+    idToken.token,
     new Headers(await headers()),
     await cookies(),
     {

@@ -19,7 +19,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { user } = useAuth();
 
-  console.log(user);
+  console.log(JSON.stringify(user));
 
   return (
     <>
