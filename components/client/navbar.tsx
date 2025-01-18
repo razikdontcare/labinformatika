@@ -19,8 +19,6 @@ export default function Navbar() {
   const pathname = usePathname();
   const { user } = useAuth();
 
-  console.log(JSON.stringify(user));
-
   return (
     <>
       <header className="z-10 flex w-full items-center justify-center bg-white shadow-md">
