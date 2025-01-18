@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { loginAction } from "../actions";
 
-export default function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect?: string }>;
+}) {
+  const redirectTo = (await searchParams).redirect;
   return (
     <div className="flex min-h-svh w-full items-center justify-center bg-muted p-6 md:p-10">
       <div className="flex w-full max-w-sm flex-col gap-6">
@@ -14,7 +19,7 @@ export default function Page() {
             Back to Homepage
           </Link>
         </Button>
-        <LoginForm loginAction={loginAction} />
+        <LoginForm loginAction={loginAction} redirectTo={redirectTo} />
       </div>
     </div>
   );

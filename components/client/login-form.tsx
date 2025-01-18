@@ -15,9 +15,11 @@ import { useState, useTransition } from "react";
 export function LoginForm({
   className,
   loginAction,
+  redirectTo,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & {
-  loginAction: (email: string, password: string) => void;
+  loginAction: (email: string, password: string, redirectTo?: string) => void;
+  redirectTo?: string;
 }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -38,7 +40,9 @@ export function LoginForm({
               e.preventDefault();
               e.stopPropagation();
 
-              startTransition(() => loginAction(username, password));
+              startTransition(() =>
+                loginAction(username, password, redirectTo),
+              );
             }}
           >
             <div className="flex flex-col gap-6">
