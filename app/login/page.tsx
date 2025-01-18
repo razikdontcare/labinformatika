@@ -2,6 +2,7 @@ import { LoginForm } from "@/components/client/login-form";
 import { HomeIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { loginAction } from "../actions";
 
 export default function Page() {
   return (
@@ -13,7 +14,7 @@ export default function Page() {
             Back to Homepage
           </Link>
         </Button>
-        <LoginForm />
+        <LoginForm loginAction={loginAction} />
       </div>
     </div>
   );

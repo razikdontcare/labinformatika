@@ -11,11 +11,15 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/lib/AuthContext";
 
 const links = [{ name: "About", href: "/about" }];
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { user } = useAuth();
+
+  console.log(user);
 
   return (
     <>
@@ -47,7 +51,9 @@ export default function Navbar() {
           </div>
           <div className="flex items-center justify-center gap-3">
             <Button asChild variant={"outline"}>
-              <Link href="/login">Login</Link>
+              <Link href={user ? "/dashboard" : "/login"}>
+                {user ? "Dashboard" : "Login"}
+              </Link>
             </Button>
             {pathname !== "/showcase" && (
               <Button asChild>
