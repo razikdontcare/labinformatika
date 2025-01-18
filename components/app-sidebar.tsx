@@ -26,11 +26,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const { user } = useAuth();
 
+  const role = user?.customClaims.role ?? "user";
+
   const data = {
     user: {
       name: user?.displayName ?? "",
       email: user?.email ?? "",
-      avatar: "https://s3.razik.net/dp.jpg",
+      avatar: user?.photoURL ?? "",
     },
     navMain: [
       {
@@ -49,6 +51,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           },
         ],
       },
+      ...(role === "admin"
+        ? [
+            {
+              title: "Admin",
+              url: "/dashboard/admin",
+              items: [
+                {
+                  title: "Manage Users",
+                  url: "/dashboard/admin/users",
+                  isActive: pathname === "/dashboard/admin/users",
+                },
+              ],
+            },
+          ]
+        : []),
     ],
   };
   return (

@@ -58,7 +58,7 @@ export async function loginAction(
     const tokenResult = await userCredentials.user.getIdTokenResult();
 
     await setCustomUserClaims(userCredentials.user.uid, {
-      roles: tokenResult.claims.roles,
+      role: tokenResult.claims.role,
       username: tokenResult.claims.username,
     });
 
