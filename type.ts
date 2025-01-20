@@ -24,3 +24,17 @@ export interface ProjectData {
 export interface Project extends ProjectData {
   id: string;
 }
+
+export interface UserDetail {
+  id: string;
+  createdAt: FirebaseDate;
+  email: string;
+  passwordHash: string;
+  role: string;
+  username: string;
+  picture: {
+    url: string;
+    id: string;
+  };
+  emailVerified: boolean;
+}

@@ -1,7 +1,7 @@
 "use server";
 import { clientConfig, serverConfig } from "@/config";
 import { auth } from "@/lib/firebase";
-import { Creator, Project, ProjectData } from "@/type";
+import { Creator, Project, ProjectData, UserDetail } from "@/type";
 import { signInWithCustomToken } from "firebase/auth";
 import { getTokens, getFirebaseAuth } from "next-firebase-auth-edge";
 import {
@@ -52,24 +52,22 @@ export async function loginAction(
     console.error("Login failed", response);
     return;
   }
-  const { token, email } = await response.json();
+  const { token, email, emailVerified } = await response.json();
   const userCredentials = await signInWithCustomToken(auth, token);
 
-  if (userCredentials.user.email === null) {
-    const { updateUser, setCustomUserClaims } = await authAction();
-    const tokenResult = await userCredentials.user.getIdTokenResult();
+  const { updateUser, setCustomUserClaims } = await authAction();
+  const tokenResult = await userCredentials.user.getIdTokenResult();
 
-    await setCustomUserClaims(userCredentials.user.uid, {
-      role: tokenResult.claims.role,
-      username: tokenResult.claims.username,
-    });
+  await setCustomUserClaims(userCredentials.user.uid, {
+    role: tokenResult.claims.role,
+    username: tokenResult.claims.username,
+  });
 
-    await updateUser(userCredentials.user.uid, {
-      displayName: tokenResult.claims.username as string,
-      email: email,
-      emailVerified: email.includes("unud.ac.id") ? true : false,
-    });
-  }
+  await updateUser(userCredentials.user.uid, {
+    displayName: tokenResult.claims.username as string,
+    email: email,
+    emailVerified: emailVerified as boolean,
+  });
 
   const idToken = await userCredentials.user.getIdToken();
 
@@ -311,4 +309,30 @@ export async function addProject(
 
   revalidatePath("/dashboard/manage");
   return true;
+}
+
+export async function listUsers(): Promise<UserDetail[]> {
+  const token = await getTokens(await cookies(), {
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    serviceAccount: serverConfig.serviceAccount,
+  });
+
+  if (!token) throw new Error("Unauthorized");
+
+  const response = await fetch(process.env.API_URL + "/auth/users", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    console.error("Failed to fetch users", response);
+    throw new Error("Failed to fetch users");
+  }
+
+  return response.json();
 }

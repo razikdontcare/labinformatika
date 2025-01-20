@@ -13,8 +13,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import Users from "@/components/client/dashboard/admin/users"; // Import Users component
+import { listUsers } from "@/app/actions";
 
 export default async function Page() {
+  const users = await listUsers(); // Fetch users data
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -34,7 +38,9 @@ export default async function Page() {
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4"></div>
+        <div className="flex flex-1 flex-col gap-4 p-4">
+          <Users items={users} /> {/* Add Users component */}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );
