@@ -9,10 +9,11 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import ShowcaseItem from "@/components/ui/showcase-item";
+import { getProjects } from "@/app/actions";
 
-const items = Array.from({ length: 5 }, (_, i) => i);
+export default async function ShowcaseContent() {
+  const projects = await getProjects();
 
-export default function ShowcaseContent() {
   return (
     <>
       <section className="flex min-h-screen w-full flex-col" role="banner">
@@ -33,9 +34,10 @@ export default function ShowcaseContent() {
               </BreadcrumbList>
             </Breadcrumb>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {items.map((_, i) => (
-                <ShowcaseItem key={i} />
-              ))}
+              {projects &&
+                projects.map((item, i) => (
+                  <ShowcaseItem key={i} items={item} />
+                ))}
             </div>
           </div>
         </div>

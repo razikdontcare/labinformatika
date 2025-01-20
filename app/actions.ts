@@ -1,6 +1,7 @@
 "use server";
 import { clientConfig, serverConfig } from "@/config";
 import { auth } from "@/lib/firebase";
+import { Project } from "@/type";
 import { signInWithCustomToken } from "firebase/auth";
 import { getTokens, getFirebaseAuth } from "next-firebase-auth-edge";
 import {
@@ -86,4 +87,17 @@ export async function loginAction(
     },
   );
   redirect(redirectTo ?? "/dashboard");
+}
+
+export async function getProjects(): Promise<Project[] | undefined> {
+  const response = await fetch(process.env.API_URL + "/project/list", {
+    method: "GET",
+  });
+
+  if (!response.ok) {
+    console.error("Failed to fetch projects", response);
+    return;
+  }
+
+  return response.json();
 }

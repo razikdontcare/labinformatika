@@ -1,6 +1,8 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
-import image from "../images/unibiz-showcase.png";
+import { useEffect, useState } from "react";
+// import image from "../images/unibiz-showcase.png";
 import {
   Card,
   CardContent,
@@ -29,23 +31,31 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { Project } from "@/type";
 
-export default function ShowcaseItem() {
+export default function ShowcaseItem({ items }: { items: Project }) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <>
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>UniBiz - Unit Bisnis Udayana</CardTitle>
-          <CardDescription>
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nisi
-            molestiae totam repudiandae obcaecati eveniet blanditiis?
-          </CardDescription>
+          <CardTitle>{items.name}</CardTitle>
+          <CardDescription>{items.description}</CardDescription>
         </CardHeader>
         <CardContent>
           <AspectRatio ratio={16 / 9}>
             <Image
-              src={image}
-              alt="UniBiz - Unit Bisnis Udayana"
+              src={items.picture}
+              alt={items.name}
               fill
               className="rounded-md object-cover"
             />
@@ -61,18 +71,15 @@ export default function ShowcaseItem() {
             <DialogContent>
               <AspectRatio ratio={16 / 9} className="mt-2">
                 <Image
-                  src={image}
-                  alt="UniBiz - Unit Bisnis Udayana"
+                  src={items.picture}
+                  alt={items.name}
                   fill
                   className="rounded-md object-cover"
                 />
               </AspectRatio>
               <DialogHeader>
-                <DialogTitle>UniBiz - Unit Bisnis Udayana</DialogTitle>
-                <DialogDescription>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Ipsam, deleniti fuga ullam ut tenetur vel!
-                </DialogDescription>
+                <DialogTitle>{items.name}</DialogTitle>
+                <DialogDescription>{items.description}</DialogDescription>
               </DialogHeader>
               <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
@@ -80,38 +87,16 @@ export default function ShowcaseItem() {
                   <AccordionContent>
                     <Table>
                       <TableBody>
-                        <TableRow>
-                          <TableCell className="font-medium">
-                            Ni Kadek Rika Dwi Utami
-                          </TableCell>
-                          <TableCell className="text-right">
-                            2308561023
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">
-                            Komang Krisna Jaya Nova Antara
-                          </TableCell>
-                          <TableCell className="text-right">
-                            2308561029
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">
-                            Jonathan Federico Tantoro
-                          </TableCell>
-                          <TableCell className="text-right">
-                            2308561053
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell className="font-medium">
-                            Abdurrazik
-                          </TableCell>
-                          <TableCell className="text-right">
-                            2308561083
-                          </TableCell>
-                        </TableRow>
+                        {items.creators.map((creator, index) => (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">
+                              {creator.name}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              {creator.nim}
+                            </TableCell>
+                          </TableRow>
+                        ))}
                       </TableBody>
                     </Table>
                   </AccordionContent>
@@ -125,7 +110,7 @@ export default function ShowcaseItem() {
                 </DialogClose>
                 <Button asChild>
                   <Link
-                    href="https://unibiz.web.id"
+                    href={items.projectUrl}
                     className="flex items-center"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -140,7 +125,7 @@ export default function ShowcaseItem() {
 
           <Button asChild className="w-full">
             <Link
-              href="https://unibiz.web.id"
+              href={items.projectUrl}
               className="flex items-center"
               target="_blank"
               rel="noopener noreferrer"
