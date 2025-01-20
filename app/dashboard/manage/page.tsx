@@ -14,8 +14,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 import { getProjects } from "@/app/actions";
 
 export default async function Page() {
@@ -41,12 +39,6 @@ export default async function Page() {
           </Breadcrumb>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Manage Projects</h1>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" /> Add New Project
-            </Button>
-          </div>
           <ManageProjects items={projects} />
         </div>
       </SidebarInset>

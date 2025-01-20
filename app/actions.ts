@@ -1,7 +1,7 @@
 "use server";
 import { clientConfig, serverConfig } from "@/config";
 import { auth } from "@/lib/firebase";
-import { Project, ProjectData } from "@/type";
+import { Creator, Project, ProjectData } from "@/type";
 import { signInWithCustomToken } from "firebase/auth";
 import { getTokens, getFirebaseAuth } from "next-firebase-auth-edge";
 import {
@@ -170,7 +170,10 @@ export async function updateProject(
   return true;
 }
 
-export async function addProject(data: ProjectData): Promise<boolean> {
+export async function addProject(
+  formData: FormData,
+  creators: Creator[],
+): Promise<boolean> {
   const token = await getTokens(await cookies(), {
     apiKey: clientConfig.apiKey,
     cookieName: serverConfig.cookieName,
@@ -180,12 +183,54 @@ export async function addProject(data: ProjectData): Promise<boolean> {
 
   if (!token) return false;
 
+  const res1 = await fetch(process.env.API_URL + "/project/generate-id", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+  });
+
+  const { id } = await res1.json();
+
+  const data = Object.fromEntries(formData.entries());
+  const projectData = {
+    name: data.name as string,
+    description: data.description as string,
+    creators: creators,
+    projectUrl: data.projectUrl as string,
+  };
+
+  const file = data.picture as File;
+
+  const fileForm = new FormData();
+  fileForm.append("file", file);
+  fileForm.append("filename", id);
+
+  const imgupload = await fetch(process.env.API_URL + "/project/upload-image", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+    body: fileForm,
+  });
+
+  if (!imgupload.ok) {
+    console.error("Failed to upload image", imgupload);
+    return false;
+  }
+
+  const { url } = await imgupload.json();
+
   const response = await fetch(process.env.API_URL + "/project/add", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token.token}`,
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      ...projectData,
+      picture: url,
+      id,
+    }),
   });
 
   if (!response.ok) {
