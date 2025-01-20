@@ -45,9 +45,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             isActive: pathname === "/dashboard",
           },
           {
-            title: "Add Projects",
-            url: "/dashboard/add",
-            isActive: pathname === "/dashboard/add",
+            title: "Manage Projects",
+            url: "/dashboard/manage",
+            isActive: pathname === "/dashboard/manage",
           },
         ],
       },
@@ -58,7 +58,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               url: "/dashboard/admin",
               items: [
                 {
-                  title: "Manage Users",
+                  title: "Users",
                   url: "/dashboard/admin/users",
                   isActive: pathname === "/dashboard/admin/users",
                 },
