@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 
 import Link from "next/link";
+import parseFirebaseDate from "@/utils/parseFirebaseDate";
 
 export default function ManageProjects({
   items,
@@ -30,10 +31,6 @@ export default function ManageProjects({
   const [projects, setProjects] = useState<Project[] | undefined>(items);
 
   const { toast } = useToast();
-
-  const handleEdit = (id: string) => {
-    console.log("Edit project with id: ", id);
-  };
 
   const handleDelete = async (id: string, name: string) => {
     toast({
@@ -72,7 +69,11 @@ export default function ManageProjects({
               <div className="flex flex-col items-center gap-4 md:flex-row">
                 <div className="relative h-32 w-full flex-shrink-0 md:h-20 md:w-32">
                   <Image
-                    src={project.picture.url}
+                    src={
+                      project.picture.url +
+                      "?updatedAt=" +
+                      parseFirebaseDate(project.updatedAt).getTime()
+                    }
                     alt={project.name}
                     fill
                     className="rounded-md object-cover"
@@ -86,11 +87,10 @@ export default function ManageProjects({
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => handleEdit(project.id)}
-                >
-                  <Pencil className="h-4 w-4" />
+                <Button variant="outline" asChild>
+                  <Link href={`/dashboard/manage/edit/${project.id}`}>
+                    <Pencil className="h-4 w-4" />
+                  </Link>
                 </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>

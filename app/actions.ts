@@ -116,6 +116,32 @@ export async function getProjects(): Promise<Project[] | undefined> {
   return response.json();
 }
 
+export async function getProjectById(id: string): Promise<Project> {
+  const token = await getTokens(await cookies(), {
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    serviceAccount: serverConfig.serviceAccount,
+  });
+
+  if (!token) throw new Error("Unauthorized");
+
+  const response = await fetch(process.env.API_URL + "/project/get/" + id, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    console.error("Failed to fetch project", response);
+    throw new Error("Failed to fetch project");
+  }
+
+  return response.json();
+}
+
 export async function deleteProject(id: string): Promise<boolean> {
   const token = await getTokens(await cookies(), {
     apiKey: clientConfig.apiKey,
@@ -144,7 +170,8 @@ export async function deleteProject(id: string): Promise<boolean> {
 
 export async function updateProject(
   id: string,
-  data: Partial<ProjectData>,
+  formData: FormData,
+  creators: Creator[],
 ): Promise<boolean> {
   const token = await getTokens(await cookies(), {
     apiKey: clientConfig.apiKey,
@@ -155,12 +182,51 @@ export async function updateProject(
 
   if (!token) return false;
 
+  const data = Object.fromEntries(formData.entries());
+  const projectData: Partial<ProjectData> = {
+    name: data.name as string,
+    description: data.description as string,
+    creators: creators,
+    projectUrl: data.projectUrl as string,
+  };
+
+  const file = data.picture as File;
+
+  if (file && file.size > 0) {
+    const fileForm = new FormData();
+    fileForm.append("file", file);
+    fileForm.append("filename", id);
+
+    const imgupload = await fetch(
+      process.env.API_URL + "/project/upload-image",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token.token}`,
+        },
+        body: fileForm,
+      },
+    );
+
+    if (!imgupload.ok) {
+      console.error("Failed to upload image", imgupload);
+      return false;
+    }
+
+    const { url, fileId } = await imgupload.json();
+    projectData.picture = {
+      url,
+      id: fileId,
+    };
+  }
+
   const response = await fetch(process.env.API_URL + "/project/update/" + id, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token.token}`,
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(projectData),
   });
 
   if (!response.ok) {
@@ -168,6 +234,7 @@ export async function updateProject(
     return false;
   }
 
+  revalidatePath("/dashboard/manage");
   return true;
 }
 

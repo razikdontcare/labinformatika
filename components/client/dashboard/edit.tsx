@@ -9,9 +9,12 @@ import { useFormStatus } from "react-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { addProject } from "@/app/actions";
+import { updateProject } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import { Textarea } from "@/components/ui/textarea";
+import { Project } from "@/type";
+import parseFirebaseDate from "@/utils/parseFirebaseDate";
+import Link from "next/link";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -23,27 +26,32 @@ function SubmitButton() {
   );
 }
 
-export default function AddProjectForm() {
-  const [creators, setCreators] = useState<{ name: string; nim: string }[]>([
-    { name: "", nim: "" },
-  ]);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+export default function EditProjectForm({ project }: { project: Project }) {
+  const [creators, setCreators] = useState<{ name: string; nim: string }[]>(
+    project.creators || [{ name: "", nim: "" }],
+  );
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    project.picture.url +
+      "?updatedAt=" +
+      parseFirebaseDate(project.updatedAt).getTime(),
+  );
 
   const router = useRouter();
   const { toast } = useToast();
 
-  const handleAddProject = async (formData: FormData) => {
-    const isAdded = await addProject(formData, creators);
-    if (isAdded) {
+  const handleUpdateProject = async (formData: FormData) => {
+    console.log(Object.fromEntries(formData));
+    const isUpdated = await updateProject(project.id, formData, creators);
+    if (isUpdated) {
       toast({
-        title: "Project added",
-        description: "Project has been added successfully",
+        title: "Project updated",
+        description: "Project has been updated successfully",
         variant: "default",
       });
     } else {
       toast({
-        title: "Project could not be added",
-        description: "An error occurred while adding project",
+        title: "Project could not be updated",
+        description: "An error occurred while updating project",
         variant: "destructive",
       });
     }
@@ -80,7 +88,7 @@ export default function AddProjectForm() {
   };
 
   return (
-    <form action={handleAddProject} className="space-y-6">
+    <form action={handleUpdateProject} className="space-y-6">
       <div className="flex flex-col items-center">
         <div className="w-full md:w-96">
           <AspectRatio
@@ -112,7 +120,6 @@ export default function AddProjectForm() {
           type="file"
           accept="image/png, image/jpeg"
           className="hidden"
-          required
           onChange={handleImageChange}
         />
       </div>
@@ -121,7 +128,13 @@ export default function AddProjectForm() {
           <Label htmlFor="name" className="text-left">
             Name
           </Label>
-          <Input id="name" name="name" className="col-span-3" required />
+          <Input
+            id="name"
+            name="name"
+            className="col-span-3"
+            defaultValue={project.name}
+            required
+          />
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
           <Label htmlFor="description" className="text-left">
@@ -131,6 +144,7 @@ export default function AddProjectForm() {
             id="description"
             name="description"
             className="col-span-3 resize-none"
+            defaultValue={project.description}
             required
           />
         </div>
@@ -143,6 +157,7 @@ export default function AddProjectForm() {
             name="projectUrl"
             type="url"
             className="col-span-3"
+            defaultValue={project.projectUrl}
             required
           />
         </div>
@@ -187,8 +202,8 @@ export default function AddProjectForm() {
         <Plus className="mr-2 h-4 w-4" /> Add Creator
       </Button>
       <div className="flex justify-end gap-2">
-        <Button variant="outline" onClick={() => router.back()}>
-          Cancel
+        <Button variant="outline" asChild>
+          <Link href="/dashboard/manage">Cancel</Link>
         </Button>
         <SubmitButton />
       </div>

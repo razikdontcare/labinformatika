@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/accordion";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Project } from "@/type";
+import parseFirebaseDate from "@/utils/parseFirebaseDate";
 
 export default function ShowcaseItem({ items }: { items: Project }) {
   const [isClient, setIsClient] = useState(false);
@@ -54,7 +55,11 @@ export default function ShowcaseItem({ items }: { items: Project }) {
         <CardContent>
           <AspectRatio ratio={16 / 9}>
             <Image
-              src={items.picture.url}
+              src={
+                items.picture.url +
+                "?updatedAt=" +
+                parseFirebaseDate(items.updatedAt).getTime()
+              }
               alt={items.name}
               fill
               className="rounded-md object-cover"
@@ -71,7 +76,11 @@ export default function ShowcaseItem({ items }: { items: Project }) {
             <DialogContent>
               <AspectRatio ratio={16 / 9} className="mt-2">
                 <Image
-                  src={items.picture.url}
+                  src={
+                    items.picture.url +
+                    "?updatedAt=" +
+                    parseFirebaseDate(items.updatedAt).getTime()
+                  }
                   alt={items.name}
                   fill
                   className="rounded-md object-cover"
