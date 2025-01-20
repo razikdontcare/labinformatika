@@ -54,7 +54,7 @@ export default function ShowcaseItem({ items }: { items: Project }) {
         <CardContent>
           <AspectRatio ratio={16 / 9}>
             <Image
-              src={items.picture}
+              src={items.picture.url}
               alt={items.name}
               fill
               className="rounded-md object-cover"
@@ -71,7 +71,7 @@ export default function ShowcaseItem({ items }: { items: Project }) {
             <DialogContent>
               <AspectRatio ratio={16 / 9} className="mt-2">
                 <Image
-                  src={items.picture}
+                  src={items.picture.url}
                   alt={items.name}
                   fill
                   className="rounded-md object-cover"

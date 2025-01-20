@@ -8,6 +8,7 @@ import {
   refreshServerCookies,
   refreshCookiesWithIdToken,
 } from "next-firebase-auth-edge/lib/next/cookies";
+import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -219,7 +220,7 @@ export async function addProject(
     return false;
   }
 
-  const { url } = await imgupload.json();
+  const { url, fileId } = await imgupload.json();
 
   const response = await fetch(process.env.API_URL + "/project/add", {
     method: "POST",
@@ -228,7 +229,10 @@ export async function addProject(
     },
     body: JSON.stringify({
       ...projectData,
-      picture: url,
+      picture: {
+        url,
+        id: fileId,
+      },
       id,
     }),
   });
@@ -238,5 +242,6 @@ export async function addProject(
     return false;
   }
 
+  revalidatePath("/dashboard/manage");
   return true;
 }
