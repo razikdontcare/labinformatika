@@ -9,6 +9,8 @@ import { User } from "@/lib/AuthContext";
 import { AuthProvider } from "@/lib/AuthProvider";
 import { clientConfig, serverConfig } from "@/config";
 
+import { Toaster } from "@/components/ui/toaster";
+
 const outfit = Outfit({
   subsets: ["latin", "latin-ext"],
   display: "swap",
@@ -68,6 +70,7 @@ export default async function RootLayout({
         <main>
           <AuthProvider user={user}>{children}</AuthProvider>
         </main>
+        <Toaster />
       </body>
     </html>
   );

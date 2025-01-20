@@ -1,7 +1,7 @@
 "use server";
 import { clientConfig, serverConfig } from "@/config";
 import { auth } from "@/lib/firebase";
-import { Project } from "@/type";
+import { Project, ProjectData } from "@/type";
 import { signInWithCustomToken } from "firebase/auth";
 import { getTokens, getFirebaseAuth } from "next-firebase-auth-edge";
 import {
@@ -90,8 +90,21 @@ export async function loginAction(
 }
 
 export async function getProjects(): Promise<Project[] | undefined> {
+  const token = await getTokens(await cookies(), {
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    serviceAccount: serverConfig.serviceAccount,
+  });
+
+  if (!token) throw new Error("Unauthorized");
+
   const response = await fetch(process.env.API_URL + "/project/list", {
     method: "GET",
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -100,4 +113,85 @@ export async function getProjects(): Promise<Project[] | undefined> {
   }
 
   return response.json();
+}
+
+export async function deleteProject(id: string): Promise<boolean> {
+  const token = await getTokens(await cookies(), {
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    serviceAccount: serverConfig.serviceAccount,
+  });
+
+  if (!token) return false;
+
+  const response = await fetch(process.env.API_URL + "/project/delete/" + id, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    console.error("Failed to delete project", response);
+    return false;
+  }
+
+  return true;
+}
+
+export async function updateProject(
+  id: string,
+  data: Partial<ProjectData>,
+): Promise<boolean> {
+  const token = await getTokens(await cookies(), {
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    serviceAccount: serverConfig.serviceAccount,
+  });
+
+  if (!token) return false;
+
+  const response = await fetch(process.env.API_URL + "/project/update/" + id, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    console.error("Failed to update project", response);
+    return false;
+  }
+
+  return true;
+}
+
+export async function addProject(data: ProjectData): Promise<boolean> {
+  const token = await getTokens(await cookies(), {
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    serviceAccount: serverConfig.serviceAccount,
+  });
+
+  if (!token) return false;
+
+  const response = await fetch(process.env.API_URL + "/project/add", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    console.error("Failed to add project", response);
+    return false;
+  }
+
+  return true;
 }
