@@ -13,12 +13,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { getProjects } from "../actions";
-import DashboardContent from "@/components/client/dashboard";
+import Profile from "@/components/client/dashboard/account/profile"; // Import Profile component
 
 export default async function Page() {
-  const projects = await getProjects();
-
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -29,17 +26,17 @@ export default async function Page() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
+                <BreadcrumbLink href="#">Account</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Home</BreadcrumbPage>
+                <BreadcrumbPage>Profile</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <DashboardContent projects={projects} />
+          <Profile /> {/* Add Profile component */}
         </div>
       </SidebarInset>
     </SidebarProvider>

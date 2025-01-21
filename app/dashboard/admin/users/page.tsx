@@ -13,11 +13,11 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { getProjects } from "../actions";
-import DashboardContent from "@/components/client/dashboard";
+import Users from "@/components/client/dashboard/admin/users"; // Import Users component
+import { listUsers } from "@/app/actions";
 
 export default async function Page() {
-  const projects = await getProjects();
+  const users = await listUsers(); // Fetch users data
 
   return (
     <SidebarProvider>
@@ -29,17 +29,17 @@ export default async function Page() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
+                <BreadcrumbLink href="#">Admin</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Home</BreadcrumbPage>
+                <BreadcrumbPage>Users</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <DashboardContent projects={projects} />
+          <Users items={users} /> {/* Add Users component */}
         </div>
       </SidebarInset>
     </SidebarProvider>

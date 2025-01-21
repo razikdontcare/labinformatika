@@ -13,12 +13,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { getProjects } from "../actions";
-import DashboardContent from "@/components/client/dashboard";
+import AddProjectForm from "@/components/client/dashboard/add";
 
 export default async function Page() {
-  const projects = await getProjects();
-
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -33,13 +30,19 @@ export default async function Page() {
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Home</BreadcrumbPage>
+                <BreadcrumbLink href="/dashboard/manage">
+                  Manage Projects
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Add</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <DashboardContent projects={projects} />
+          <AddProjectForm />
         </div>
       </SidebarInset>
     </SidebarProvider>
