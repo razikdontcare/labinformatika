@@ -89,20 +89,8 @@ export async function loginAction(
 }
 
 export async function getProjects(): Promise<Project[] | undefined> {
-  const token = await getTokens(await cookies(), {
-    apiKey: clientConfig.apiKey,
-    cookieName: serverConfig.cookieName,
-    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
-    serviceAccount: serverConfig.serviceAccount,
-  });
-
-  if (!token) throw new Error("Unauthorized");
-
   const response = await fetch(process.env.API_URL + "/project/list", {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token.token}`,
-    },
     cache: "no-store",
   });
 
