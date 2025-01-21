@@ -26,78 +26,82 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const columns: ColumnDef<UserDetail>[] = [
-  {
-    accessorKey: "picture",
-    header: "Picture",
-    cell: ({ row }) => (
-      <Avatar className="h-10 w-10 rounded-lg">
-        <AvatarImage
-          src={row.original.picture.url}
-          alt={row.original.username}
-        />
-        <AvatarFallback className="rounded-lg">
-          {row.original.username.slice(0, 2).toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
-    ),
-  },
-  {
-    accessorKey: "username",
-    header: "Username",
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
-    accessorKey: "role",
-    header: "Role",
-  },
-  {
-    accessorKey: "id",
-    header: "User UID",
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      const user = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
-            >
-              Copy User ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem disabled={user.emailVerified}>
-              Verify
-            </DropdownMenuItem>
-            <DropdownMenuItem>Reset Password</DropdownMenuItem>
-            <DropdownMenuItem>Edit Account</DropdownMenuItem>
-            <DropdownMenuItem>Disable Account</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-red-500">
-              Delete Account
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
+import { useAuth } from "@/lib/AuthContext";
 
 const Users = ({ items }: { items: UserDetail[] }) => {
+  const { user } = useAuth();
+
+  const columns: ColumnDef<UserDetail>[] = [
+    {
+      accessorKey: "picture",
+      header: "Picture",
+      cell: ({ row }) => (
+        <Avatar className="h-10 w-10 rounded-lg">
+          <AvatarImage
+            src={row.original.picture.url}
+            alt={row.original.username}
+          />
+          <AvatarFallback className="rounded-lg">
+            {row.original.username.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+      ),
+    },
+    {
+      accessorKey: "username",
+      header: "Username",
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+    },
+    {
+      accessorKey: "role",
+      header: "Role",
+    },
+    {
+      accessorKey: "id",
+      header: "User UID",
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const selected = row.original;
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(selected.id)}
+              >
+                Copy User ID
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Reset Password</DropdownMenuItem>
+              <DropdownMenuItem disabled={selected.id === user?.uid}>
+                Disable Account
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-red-500"
+                disabled={selected.id === user?.uid}
+              >
+                Delete Account
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
+
   const users = useReactTable({
     data: items,
     columns,
