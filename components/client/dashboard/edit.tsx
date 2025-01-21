@@ -79,6 +79,14 @@ export default function EditProjectForm({ project }: { project: Project }) {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      if (file.size > 3 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 3MB",
+          variant: "destructive",
+        });
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);

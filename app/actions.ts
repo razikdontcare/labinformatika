@@ -336,3 +336,121 @@ export async function listUsers(): Promise<UserDetail[]> {
 
   return response.json();
 }
+
+export async function checkUsername(username: string): Promise<boolean> {
+  const response = await fetch(process.env.API_URL + "/auth/check-username", {
+    method: "POST",
+    body: JSON.stringify({ username }),
+  });
+
+  if (!response.ok) {
+    console.error("Failed to check username", response);
+    return false;
+  }
+
+  const { exists } = (await response.json()) as { exists: boolean };
+
+  return exists;
+}
+
+export async function checkEmail(email: string): Promise<boolean> {
+  const response = await fetch(process.env.API_URL + "/auth/check-email", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    console.error("Failed to check email", response);
+    return false;
+  }
+
+  const { exists } = (await response.json()) as { exists: boolean };
+
+  return exists;
+}
+
+export async function updateUser(userId: string, formData: FormData) {
+  const token = await getTokens(await cookies(), {
+    apiKey: clientConfig.apiKey,
+    cookieName: serverConfig.cookieName,
+    cookieSignatureKeys: serverConfig.cookieSignatureKeys,
+    serviceAccount: serverConfig.serviceAccount,
+  });
+
+  if (!token) return false;
+
+  const data = Object.fromEntries(formData.entries());
+  const userData: Partial<UserDetail> = {
+    id: userId,
+    username: data.username as string,
+    email: data.email as string,
+  };
+
+  const file = data.picture as File;
+
+  if (file && file.size > 0) {
+    const fileForm = new FormData();
+    fileForm.append("file", file);
+    fileForm.append("filename", userId);
+
+    const imgupload = await fetch(process.env.API_URL + "/auth/upload-image", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token.token}`,
+      },
+      body: fileForm,
+    });
+
+    if (!imgupload.ok) {
+      console.error("Failed to upload image", imgupload);
+      return false;
+    }
+
+    const { url, fileId } = await imgupload.json();
+    userData.picture = {
+      url,
+      id: fileId,
+    };
+  }
+
+  const response = await fetch(process.env.API_URL + "/auth/update", {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(userData),
+  });
+
+  if (!response.ok) {
+    console.error("Failed to update user", response);
+    return false;
+  }
+
+  const updatedUser = (await response.json()) as UserDetail;
+
+  const { updateUser, setCustomUserClaims } = await authAction();
+
+  await setCustomUserClaims(userId, {
+    role: updatedUser.role,
+    username: updatedUser.username,
+  });
+
+  await updateUser(userId, {
+    displayName: updatedUser.username,
+    email: updatedUser.email,
+    emailVerified: updatedUser.emailVerified,
+  });
+
+  if (file && file.size > 0) {
+    await updateUser(userId, {
+      photoURL: updatedUser.picture.url + "?updatedAt=" + Date.now(),
+    });
+  }
+
+  await refreshCreds();
+
+  revalidatePath("/dashboard/admin/users");
+  revalidatePath("/dashboard/account/profile");
+  return true;
+}
