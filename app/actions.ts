@@ -43,7 +43,7 @@ export async function loginAction(
   password: string,
   redirectTo?: string,
 ) {
-  const response = await fetch(process.env.API_URL + "/auth/login", {
+  const response = await fetch(process.env.BASE_URL + "/auth/login", {
     method: "POST",
     body: JSON.stringify({ username, password }),
   });
@@ -309,7 +309,7 @@ export async function listUsers(): Promise<UserDetail[]> {
 
   if (!token) throw new Error("Unauthorized");
 
-  const response = await fetch(process.env.API_URL + "/auth/users", {
+  const response = await fetch(process.env.BASE_URL + "/auth/users", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token.token}`,
@@ -381,7 +381,7 @@ export async function updateUser(userId: string, formData: FormData) {
     fileForm.append("file", file);
     fileForm.append("filename", userId);
 
-    const imgupload = await fetch(process.env.API_URL + "/auth/upload-image", {
+    const imgupload = await fetch(process.env.BASE_URL + "/auth/upload-image", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token.token}`,
@@ -401,7 +401,7 @@ export async function updateUser(userId: string, formData: FormData) {
     };
   }
 
-  const response = await fetch(process.env.API_URL + "/auth/update", {
+  const response = await fetch(process.env.BASE_URL + "/auth/update", {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token.token}`,
