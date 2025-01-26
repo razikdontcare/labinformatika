@@ -34,28 +34,32 @@ const Profile = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // Check if the username is already taken
-      const isUsernameTaken = await checkUsername(name);
-      if (isUsernameTaken) {
-        toast({
-          title: "Username already taken",
-          description: "Please choose a different username",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
+      // Only check username if it has changed
+      if (name !== (user?.customClaims.username as string)) {
+        const isUsernameTaken = await checkUsername(name);
+        if (isUsernameTaken) {
+          toast({
+            title: "Username already taken",
+            description: "Please choose a different username",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
       }
 
-      // Check if the email is already taken
-      const isEmailTaken = await checkEmail(email);
-      if (isEmailTaken) {
-        toast({
-          title: "Email already taken",
-          description: "Please choose a different email",
-          variant: "destructive",
-        });
-        setLoading(false);
-        return;
+      // Only check email if it has changed
+      if (email !== user?.email) {
+        const isEmailTaken = await checkEmail(email);
+        if (isEmailTaken) {
+          toast({
+            title: "Email already taken",
+            description: "Please choose a different email",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
       }
 
       const formData = new FormData();
