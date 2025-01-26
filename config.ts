@@ -27,3 +27,9 @@ export const clientConfig = {
   databaseURL: process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
 };
+
+export const imageKitConfig = {
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY as string,
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY as string,
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT as string,
+};
