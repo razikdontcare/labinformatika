@@ -23,7 +23,7 @@ import { initializeServerApp } from "firebase/app";
 const serverApp = initializeServerApp(clientConfig, {});
 const db = getFirestore(serverApp);
 
-export const img = new ImageKit({
+const img = new ImageKit({
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY as string,
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY as string,
   urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT as string,
@@ -42,7 +42,7 @@ const PUBLIC_PATH = [
   "/auth/check-email",
 ];
 
-export function authAction() {
+function authAction() {
   return getFirebaseAuth({
     apiKey: clientConfig.apiKey,
     serviceAccount: serverConfig.serviceAccount,
