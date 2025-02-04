@@ -38,3 +38,7 @@ export interface UserDetail {
   };
   emailVerified: boolean;
 }
+
+export interface UserDetailServer extends Omit<UserDetail, "createdAt"> {
+  createdAt: Date;
+}

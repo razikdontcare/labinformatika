@@ -50,7 +50,9 @@ export default function ShowcaseItem({ items }: { items: Project }) {
       <Card className="w-full">
         <CardHeader>
           <CardTitle>{items.name}</CardTitle>
-          <CardDescription>{items.description}</CardDescription>
+          <CardDescription className="line-clamp-4">
+            {items.description}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <AspectRatio ratio={16 / 9}>

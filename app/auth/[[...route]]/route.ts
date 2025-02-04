@@ -8,14 +8,16 @@ import {
   query,
   where,
   updateDoc,
+  setDoc,
 } from "firebase/firestore";
-import { UserDetail } from "@/type";
+import { UserDetail, UserDetailServer } from "@/type";
 import bcrypt from "bcryptjs";
 import { getFirebaseAuth } from "next-firebase-auth-edge";
-import { clientConfig, serverConfig } from "@/config";
+import { clientConfig, serverConfig, imageKitConfig } from "@/config";
 import { DecodedIdToken } from "next-firebase-auth-edge/auth";
 import ImageKit from "imagekit";
 import path from "path";
+import { customAlphabet } from "nanoid";
 
 import { getFirestore } from "firebase/firestore";
 import { initializeServerApp } from "firebase/app";
@@ -23,11 +25,7 @@ import { initializeServerApp } from "firebase/app";
 const serverApp = initializeServerApp(clientConfig, {});
 const db = getFirestore(serverApp);
 
-const img = new ImageKit({
-  publicKey: process.env.IMAGEKIT_PUBLIC_KEY as string,
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY as string,
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT as string,
-});
+const img = new ImageKit(imageKitConfig);
 
 export const runtime = "nodejs";
 
@@ -35,12 +33,7 @@ const app = new Hono<{ Variables: { user: DecodedIdToken } }>().basePath(
   "/auth",
 );
 
-const PUBLIC_PATH = [
-  "/auth/login",
-  "/auth/register",
-  "/auth/check-username",
-  "/auth/check-email",
-];
+const PUBLIC_PATH = ["/login", "/register", "/check-username", "/check-email"];
 
 function authAction() {
   return getFirebaseAuth({
@@ -48,6 +41,14 @@ function authAction() {
     serviceAccount: serverConfig.serviceAccount,
   });
 }
+
+const generateId = (prefix?: string): string => {
+  const pre = prefix ?? "IFLAB";
+  const length = 11;
+  const year = new Date().getFullYear();
+  const nanoid = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", length);
+  return pre + year + nanoid();
+};
 
 app.use(async (c, next) => {
   const authorization = c.req.header("Authorization")?.split(" ")[1];
@@ -100,6 +101,58 @@ app.post("/login", async (c) => {
       return c.json({ error: error.message }, 500);
     }
     return c.json({ error: "An error occurred" }, 500);
+  }
+});
+
+app.post("/register", async (c) => {
+  try {
+    const { username, password, email, role, emailVerified } =
+      await c.req.json();
+
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    const usersRef = collection(db, "users");
+    const userQuery = query(usersRef, where("username", "==", username));
+    const emailQuery = query(usersRef, where("email", "==", email));
+
+    const userSnapshot = await getDocs(userQuery);
+    const emailSnapshot = await getDocs(emailQuery);
+
+    if (!userSnapshot.empty) {
+      return c.json({ error: "Username already taken" }, 400);
+    }
+
+    if (!emailSnapshot.empty) {
+      return c.json({ error: "Email already taken" }, 400);
+    }
+
+    const userId = generateId("IFUSER");
+
+    const user: UserDetailServer = {
+      id: userId,
+      username,
+      email,
+      passwordHash,
+      createdAt: new Date(),
+      role: role || "user",
+      emailVerified: emailVerified || false,
+      picture: {
+        url: "",
+        id: "",
+      },
+    };
+
+    const userRef = doc(usersRef, userId);
+    await setDoc(userRef, user);
+
+    return c.json({ ...user }, 200);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error registering user:", error.message);
+      return c.json({ error: error.message }, 500);
+    }
+    return c.json({ error: "Failed to register user" }, 500);
   }
 });
 

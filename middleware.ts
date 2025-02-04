@@ -16,10 +16,10 @@ const PUBLIC_PATH = [
   "/auth/users",
   "/auth/upload-image",
   "/auth/update",
-  "/project/list",
-  "/project/get",
   "/auth/check-username",
   "/auth/check-email",
+  "/project/list",
+  "/project/get",
 ];
 
 export async function middleware(request: NextRequest) {
