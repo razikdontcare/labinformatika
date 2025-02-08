@@ -119,6 +119,7 @@ export default function ShowcaseItem({ items }: { items: Project }) {
                     Close
                   </Button>
                 </DialogClose>
+                {items.projectUrl !== "" && (
                 <Button asChild>
                   <Link
                     href={items.projectUrl}
@@ -130,10 +131,12 @@ export default function ShowcaseItem({ items }: { items: Project }) {
                     <ExternalLinkIcon />
                   </Link>
                 </Button>
+                )}
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
+          {items.projectUrl !== "" && (
           <Button asChild className="w-full">
             <Link
               href={items.projectUrl}
@@ -145,6 +148,7 @@ export default function ShowcaseItem({ items }: { items: Project }) {
               <ExternalLinkIcon />
             </Link>
           </Button>
+          )}
         </CardFooter>
       </Card>
     </>
