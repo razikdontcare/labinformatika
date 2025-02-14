@@ -91,7 +91,6 @@ export async function loginAction(
 export async function getProjects(): Promise<Project[] | undefined> {
   const response = await fetch(process.env.API_URL + "/project/list", {
     method: "GET",
-    cache: "no-store",
   });
 
   if (!response.ok) {
@@ -151,6 +150,8 @@ export async function deleteProject(id: string): Promise<boolean> {
     return false;
   }
 
+  revalidatePath("/dashboard/manage");
+  revalidatePath("/showcase");
   return true;
 }
 
@@ -221,6 +222,7 @@ export async function updateProject(
   }
 
   revalidatePath("/dashboard/manage");
+  revalidatePath("/showcase");
   return true;
 }
 
@@ -296,6 +298,7 @@ export async function addProject(
   }
 
   revalidatePath("/dashboard/manage");
+  revalidatePath("/showcase");
   return true;
 }
 
