@@ -166,7 +166,6 @@ export default function EditProjectForm({ project }: { project: Project }) {
             type="url"
             className="col-span-3"
             defaultValue={project.projectUrl}
-            required
           />
         </div>
         {creators.map((creator, index) => (
