@@ -151,7 +151,6 @@ export default function AddProjectForm() {
             name="projectUrl"
             type="url"
             className="col-span-3"
-            required
           />
         </div>
         {creators.map((creator, index) => (

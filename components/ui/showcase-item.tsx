@@ -120,34 +120,34 @@ export default function ShowcaseItem({ items }: { items: Project }) {
                   </Button>
                 </DialogClose>
                 {items.projectUrl !== "" && (
-                <Button asChild>
-                  <Link
-                    href={items.projectUrl}
-                    className="flex items-center"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span>View</span>
-                    <ExternalLinkIcon />
-                  </Link>
-                </Button>
+                  <Button asChild>
+                    <Link
+                      href={items.projectUrl}
+                      className="flex items-center"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <span>View</span>
+                      <ExternalLinkIcon />
+                    </Link>
+                  </Button>
                 )}
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
           {items.projectUrl !== "" && (
-          <Button asChild className="w-full">
-            <Link
-              href={items.projectUrl}
-              className="flex items-center"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <span>View</span>
-              <ExternalLinkIcon />
-            </Link>
-          </Button>
+            <Button asChild className="w-full">
+              <Link
+                href={items.projectUrl}
+                className="flex items-center"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>View</span>
+                <ExternalLinkIcon />
+              </Link>
+            </Button>
           )}
         </CardFooter>
       </Card>
