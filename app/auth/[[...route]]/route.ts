@@ -33,7 +33,12 @@ const app = new Hono<{ Variables: { user: DecodedIdToken } }>().basePath(
   "/auth",
 );
 
-const PUBLIC_PATH = ["/login", "/register", "/check-username", "/check-email"];
+const PUBLIC_PATH = [
+  "/auth/login",
+  "/auth/register",
+  "/auth/check-username",
+  "/auth/check-email",
+];
 
 function authAction() {
   return getFirebaseAuth({
