@@ -11,12 +11,14 @@ Official Site for Lab Informatika Universitas Udayana
 ### Installation
 
 1. Clone the repository:
+
    ```sh
    git clone https://github.com/razikdontcare/labinformatika.git
    cd labinformatika
    ```
 
 2. Install dependencies:
+
    ```sh
    npm install
    # or
@@ -24,6 +26,7 @@ Official Site for Lab Informatika Universitas Udayana
    ```
 
 3. Copy the example environment file and fill in the required values:
+
    ```sh
    cp .env.example .env.local
    ```
@@ -39,11 +42,15 @@ Official Site for Lab Informatika Universitas Udayana
    NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="your_firebase_auth_domain"
    NEXT_PUBLIC_FIREBASE_DATABASE_URL="your_firebase_database_url"
    NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID="your_firebase_messaging_sender_id"
+   IMAGEKIT_PUBLIC_KEY="your_imagekit_public_key"
+   IMAGEKIT_PRIVATE_KEY="your_imagekit_private_key"
+   IMAGEKIT_URL_ENDPOINT="your_imagekit_url_endpoint"
    ```
 
 ### Running the Project
 
 1. Start the development server:
+
    ```sh
    npm run dev
    # or
@@ -55,6 +62,7 @@ Official Site for Lab Informatika Universitas Udayana
 ### Building for Production
 
 1. Build the project:
+
    ```sh
    npm run build
    # or
