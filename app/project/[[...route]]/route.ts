@@ -54,7 +54,7 @@ app.get("/generate-id", async (c) => {
 app.post("/add", async (c) => {
   try {
     const body = (await c.req.json()) as Project;
-    let id = body.id == "" ? generateId() : body.id;
+    const id = body.id == "" ? generateId() : body.id;
     const data: Project = {
       ...body,
       id,
