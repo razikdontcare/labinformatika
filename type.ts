@@ -17,8 +17,8 @@ export interface ProjectData {
   };
   creators: Creator[];
   projectUrl: string;
-  createdAt: FirebaseDate;
-  updatedAt: FirebaseDate;
+  createdAt: FirebaseDate | Date;
+  updatedAt: FirebaseDate | Date;
 }
 
 export interface Project extends ProjectData {
@@ -27,7 +27,7 @@ export interface Project extends ProjectData {
 
 export interface UserDetail {
   id: string;
-  createdAt: FirebaseDate;
+  createdAt: FirebaseDate | Date;
   email: string;
   passwordHash: string;
   role: string;
@@ -42,3 +42,5 @@ export interface UserDetail {
 export interface UserDetailServer extends Omit<UserDetail, "createdAt"> {
   createdAt: Date;
 }
+
+export type LabCollection = "projects" | "users";

@@ -17,8 +17,7 @@ import { clientConfig, serverConfig, imageKitConfig } from "@/config";
 import { DecodedIdToken } from "next-firebase-auth-edge/auth";
 import ImageKit from "imagekit";
 import path from "path";
-import { customAlphabet } from "nanoid";
-
+import generateId from "@/utils/generateId";
 import { getFirestore } from "firebase/firestore";
 import { initializeServerApp } from "firebase/app";
 
@@ -46,14 +45,6 @@ function authAction() {
     serviceAccount: serverConfig.serviceAccount,
   });
 }
-
-const generateId = (prefix?: string): string => {
-  const pre = prefix ?? "IFLAB";
-  const length = 11;
-  const year = new Date().getFullYear();
-  const nanoid = customAlphabet("1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ", length);
-  return pre + year + nanoid();
-};
 
 app.use(async (c, next) => {
   const authorization = c.req.header("Authorization")?.split(" ")[1];
